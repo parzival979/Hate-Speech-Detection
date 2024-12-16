@@ -1,0 +1,44 @@
+# Config for running the InferenceRecipe in generate.py to generate output from an LLM
+#
+# To launch, run the following command from root torchtune directory:
+#    tune run generate --config generation
+
+# Model Arguments
+model:
+  _component_: torchtune.models.llama3_2.llama3_2_1b
+
+checkpointer:
+  _component_: torchtune.training.FullModelHFCheckpointer
+  checkpoint_dir: /scratch/und5uv/Models/Incontext_Tune_Full_1B/
+  checkpoint_files: [
+    hf_model_0001_4.pt
+  ]
+  recipe_checkpoint: null
+  output_dir: ../Models/Incontext_Tune_Full_1B
+  model_type: LLAMA3_2
+
+device: cuda
+dtype: bf16
+
+seed: 1234
+
+# Tokenizer
+tokenizer:
+  _component_: torchtune.models.llama3.llama3_tokenizer
+  path: /tmp/Llama-3.2-1B-Instruct/original/tokenizer.model
+  max_seq_len: null
+  prompt_template: null
+
+# Generation arguments;
+max_new_tokens: 300
+temperature: 0.001 # 0.8 and 0.6 are popular values to try
+top_k: 1
+
+enable_kv_cache: False
+
+quantizer: null
+
+# Paths to your dataset and output files
+input_dataset_path: ../Datasets/Split Datasets/Classification/incontext/incontext_test_data.csv
+output_dataset_path: ../Datasets/Output Datasets/Incontext_d_Incontext_m_classification_1B_e5.csv
+
